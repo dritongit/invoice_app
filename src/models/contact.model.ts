@@ -5,30 +5,28 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export class Contact {
-    static async getAll() {
-        const id = 1;
-        const [rows] = await pool.query('CALL GetContacts(?)', [id]);
+    static async getAll(user_id: string) {
+        const [rows] = await pool.query('CALL ContactReadAll(?)', [user_id]);
         return rows;
     }
 
-    static async getById(id: number) {
-        const user_id = 1;
-        const [rows] = await pool.query('CALL GetArticleById(?, ?)', [user_id, id]);
+    static async getById(user_id: string, contact_id: string) {
+        const [rows] = await pool.query('CALL ContactReadById(?, ?)', [user_id, contact_id]);
         return rows || null;
     }
 
-    static async create(title: string, content: string) {
-        const [result] = await pool.query('CALL CreateArticle(?, ?)', [title, content]);
+    static async create(contact_id: string, user_id: string, name: string, alternative: string, address1: string, address2: string, address3: string, town: string, region: string, email1: string, email2: string, postcode: string) {
+        const [result] = await pool.query('CALL ContactCreate(?,?,?,?,?,?,?,?,?,?,?,?)', [contact_id, user_id, name, alternative, address1, address2, address3, town, region, email1, email2, postcode]);
         return result;
     }
 
-    static async update(id: number, title: string, content: string) {
-        const [result] = await pool.query('CALL UpdateArticle(?, ?, ?)', [id, title, content]);
+    static async update(contact_id: string, user_id: string, name: string, alternative: string, address1: string, address2: string, address3: string, town: string, region: string, email1: string, email2: string, postcode: string) {
+        const [result] = await pool.query('CALL ContactUpdate(?,?,?,?,?,?,?,?,?,?,?,?)', [contact_id, user_id, name, alternative, address1, address2, address3, town, region, email1, email2, postcode]);
         return result;
     }
 
-    static async delete(id: number) {
-        const [result] = await pool.query('CALL DeleteArticle(?)', [id]);
+    static async delete(contact_id: string, user_id: string) {
+        const [result] = await pool.query('CALL ContactDelete(?,?)', [contact_id, user_id]);
         return result;
     }
 }

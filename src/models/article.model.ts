@@ -11,7 +11,7 @@ export class Article {
     }
 
     static async getById(user_id: string, id: string) {
-        const [rows] = await pool.query('CALL GetArticleById(?, ?)', [user_id, id]);
+        const [rows] = await pool.query('CALL ArticleReadById(?, ?)', [user_id, id]);
         return rows || null;
     }
 
