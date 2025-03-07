@@ -1,20 +1,19 @@
 import pool from '../config/db';
-import mysql from 'mysql2/promise';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 export class Auth {
-    static async register(email: string, password: string, role: string): Promise<any | false> {
+    static async register(uuid: string, email: string, password: string, role: string): Promise<any | false> {
         try {
-            const [existingUser]: any = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-            if (existingUser.length > 0) {
+            const [existingUser]: any = await pool.query('CALL UserByEmail(?)', [email]);
+            if (existingUser[0].length > 0) {
                 return false; // User already exists
             }
 
             const [result]: any = await pool.query(
-                'INSERT INTO users (email, password, role) VALUES (?, ?, ?)',
-                [email, password, role]
+                'CALL UserCreate(?,?,?,?)',
+                [uuid, email, password, role]
             );
 
             if (result.affectedRows === 1) {
@@ -29,11 +28,10 @@ export class Auth {
 
     static async login(email: string, password: string): Promise<any | false> {
         try {
-            const [rows]: any = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-            const user = rows.length > 0 ? rows[0] : null;
-
-            if (user && await Auth.verifyPassword(password, user.password)) {
-                return user;
+            const [rows]: any = await pool.query('CALL UserByEmail(?)', [email]);
+            const user = rows[0].length > 0 ? rows[0] : null;
+            if (user[0] && await Auth.verifyPassword(password, user[0].password)) {
+                return user[0];
             }
             return false;
         } catch (error) {

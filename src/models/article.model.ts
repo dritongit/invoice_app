@@ -5,30 +5,28 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export class Article {
-    static async getAll() {
-        const id = 1;
-        const [rows] = await pool.query('CALL GetArticles(1)', [id]);
+    static async getAll(user_id: string) {
+        const [rows] = await pool.query('CALL ArticleReadAll(?)', [user_id]);
         return rows;
     }
 
-    static async getById(id: number) {
-        const user_id = 1;
+    static async getById(user_id: string, id: string) {
         const [rows] = await pool.query('CALL GetArticleById(?, ?)', [user_id, id]);
         return rows || null;
     }
 
-    static async create(title: string, content: string) {
-        const [result] = await pool.query('CALL CreateArticle(?, ?)', [title, content]);
+    static async create(article_id: string, user_id: string, name: string, description: string, taxed: number, tax_rate: number, discounted: number, discount_percent: number, discount_value: number, unit_price: number) {
+        const [result] = await pool.query('CALL ArticleCreate(?,?,?,?,?,?,?,?,?,?)', [article_id, user_id, name, description, taxed, tax_rate, discounted, discount_percent, discount_value, unit_price]);
         return result;
     }
 
-    static async update(id: number, title: string, content: string) {
-        const [result] = await pool.query('CALL UpdateArticle(?, ?, ?)', [id, title, content]);
+    static async update(article_id: string, user_id: string, name: string, description: string, taxed: number, tax_rate: number, discounted: number, discount_percent: number, discount_value: number, unit_price: number) {
+        const [result] = await pool.query('CALL ArticleUpdate(?,?,?,?,?,?,?,?,?,?)', [user_id, article_id, name, description, taxed, tax_rate, discounted, discount_percent, discount_value, unit_price]);
         return result;
     }
 
-    static async delete(id: number) {
-        const [result] = await pool.query('CALL DeleteArticle(?)', [id]);
+    static async delete(id: string, user_id: string) {
+        const [result] = await pool.query('CALL ArticleDelete(?,?)', [id, user_id]);
         return result;
     }
 }

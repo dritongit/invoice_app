@@ -6,12 +6,12 @@ import bcrypt from 'bcryptjs';
 export class AuthController {
     async register(req: Request, res: Response): Promise<void> {
         try {
-            const { email, password, role } = req.body;
+            const { uuid, email, password, role } = req.body;
 
             // Hash password before saving to the database
             const hashedPassword = await bcrypt.hash(password, 10);
             
-            const newUser = await Auth.register(email, hashedPassword, role);
+            const newUser = await Auth.register(uuid, email, hashedPassword, role);
 
             if (newUser) {
                 const token = generateToken(newUser.id, newUser.role);
@@ -31,7 +31,7 @@ export class AuthController {
             const user = await Auth.login(email, password);
 
             if (user) {
-                const token = generateToken(user.id, user.role);
+                const token = generateToken(user.user_id, user.role);
                 res.json({ token, role: user.role });
             } else {
                 res.status(401).json({ error: 'Email ose fjalëkalim i pasaktë!' });

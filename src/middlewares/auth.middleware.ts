@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { verifyToken } from '../config/jwt';
 
-export const authenticateJWT: RequestHandler = (req, res, next) => {
+// Extend Request type to include user
+interface UserRequest extends Request {
+    user?: { user_id: number; email: string; role: string };
+}
+export const authenticateJWT: RequestHandler = (req: UserRequest, res, next) => {
     const token = req.header('Authorization');
 
     if (!token) {
@@ -15,6 +19,6 @@ export const authenticateJWT: RequestHandler = (req, res, next) => {
         return; // ✅ Ensures function stops execution
     }
 
-    (req as any).user = decoded;
+    (req as any).user = decoded as { user_id: number; email: string; role: string };
     next(); // ✅ Calls `next()` only when authorized
 };

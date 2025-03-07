@@ -8,13 +8,13 @@ const JWT_EXPIRATION: string | number = process.env.JWT_EXPIRATION || '1h'; // â
 
 // Define JWT Payload Type
 interface JwtPayload {
-    userId: number;
+    user_id: number;
     email: string;
 }
 
 // Generate a JWT Token
-export const generateToken = (userId: number, email: string): string => {
-    return jwt.sign({userId, email} as JwtPayload, JWT_SECRET)
+export const generateToken = (user_id: number, email: string): string => {
+    return jwt.sign({user_id, email} as JwtPayload, JWT_SECRET)
 };
 
 // Verify JWT Token
