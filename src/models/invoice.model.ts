@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export class Invoice {
-    static async getAll(user_id: string, limit: number, offset: number) {
-        const [rows] = await pool.query('CALL InvoiceReadAll(?,?,?)', [user_id, limit, offset]);
+    static async getAll(user_id: string, limit: number, offset: number, sortColumn: string = "i.created_at", sortOrder: string = "DESC") {
+        const [rows] = await pool.query('CALL InvoiceReadAll(?,?,?,?,?)', [user_id, limit, offset, sortColumn, sortOrder]);
         return rows;
     }
 

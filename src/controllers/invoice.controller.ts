@@ -18,7 +18,10 @@ import { Invoice } from '../models/invoice.model';
                 const limit = parseInt(req.query.limit as string) || 10; // Default to 10 records per page
                 const offset = (page - 1) * limit; // Calculate offset
     
-                const [invoices]: any = await Invoice.getAll(user_id, limit, offset);
+                const sortColumn = req.query.sortColumn as string || "i.created_at";
+                const sortOrder = (req.query.sortOrder as string)?.toUpperCase() === "ASC" ? "ASC" : "DESC";
+
+                const [invoices]: any = await Invoice.getAll(user_id, limit, offset, sortColumn, sortOrder);
                 const total = invoices[0]?.total_records || 0;
 
                 res.json({

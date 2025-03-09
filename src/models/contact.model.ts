@@ -11,8 +11,8 @@ export class Contact {
     }
 
     static async getById(user_id: string, contact_id: string) {
-        const [rows] = await pool.query('CALL ContactReadById(?, ?)', [user_id, contact_id]);
-        return rows || null;
+        const [rows]:any = await pool.query('CALL ContactReadById(?, ?)', [user_id, contact_id]);
+        return rows[0][0] || null;
     }
 
     static async create(contact_id: string, user_id: string, name: string, alternative: string, address1: string, address2: string, address3: string, town: string, region: string, email1: string, email2: string, postcode: string) {
