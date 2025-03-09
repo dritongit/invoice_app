@@ -14,9 +14,9 @@ import { Invoice } from '../models/invoice.model';
                 }
     
                 const user_id = req.user.user_id;
-                const page = parseInt(req.query.page as string) || 1;  // Default to page 1
-                const limit = parseInt(req.query.limit as string) || 10; // Default to 10 records per page
-                const offset = (page - 1) * limit; // Calculate offset
+                const page = parseInt(req.query.page as string) || 1;
+                const limit = parseInt(req.query.limit as string) || 10;
+                const offset = (page - 1) * limit;
     
                 const sortColumn = req.query.sortColumn as string || "i.created_at";
                 const sortOrder = (req.query.sortOrder as string)?.toUpperCase() === "ASC" ? "ASC" : "DESC";
@@ -58,14 +58,14 @@ import { Invoice } from '../models/invoice.model';
                     res.status(403).json({ message: 'Unauthorized' });
                     return;
                 }
-                const article = await Invoice.create(req.body.invoice_id, req.user.user_id, req.body.name, req.body.description, req.body.taxed, req.body.tax_rate, req.body.discounted, req.body.discount_percent, req.body.discount_value, req.body.unit_price);
+                const article = await Invoice.create(req.body.invoice_id, req.user.user_id, req.body.created_at, req.body.due_date, req.body.contact_1, req.body.contact_2, req.body.additional_tax, req.body.additional_tax_rate, req.body.deduction_as_percent, req.body.deduction_percent, req.body.deduction_value,  req.body.delivery,  req.body.delivery_rate);
                 res.status(201).json(article);
             } catch (error) {
                 res.status(500).json({ message: 'Error creating article' });
             }
         }
     
-        async updateArticle(req: UserRequest, res: Response): Promise<void> {
+        async updateInvoice(req: UserRequest, res: Response): Promise<void> {
             try {
                 if (!req.user) {
                     res.status(403).json({ message: 'Unauthorized' });
@@ -78,7 +78,7 @@ import { Invoice } from '../models/invoice.model';
             }
         }
     
-        async deleteArticle(req: UserRequest, res: Response): Promise<void> {
+        async deleteInvoice(req: UserRequest, res: Response): Promise<void> {
             if (!req.user) {
                 res.status(403).json({ message: 'Unauthorized' });
                 return;
