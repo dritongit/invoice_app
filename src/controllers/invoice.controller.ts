@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 import { Invoice } from '../models/invoice.model';
 
+import { Contact } from '../models/contact.model';
+import { Subinvoice } from '../models/subinvoice.model';
+import { Payment } from '../models/payment.model';
+
     interface UserRequest extends Request {
         user?: { user_id: string; email: string; role: string };
     }
@@ -35,25 +39,55 @@ import { Invoice } from '../models/invoice.model';
             }
         }
     
-        async getInvoiceById(req: UserRequest, res: Response): Promise<void> {
+        async getInvoiceById(req: UserRequest , res: Response): Promise<void> {
             try {
+                // Ensure req.user exists before accessing req.user.user_id
                 if (!req.user) {
                     res.status(403).json({ message: 'Unauthorized' });
                     return;
                 }
+        
                 const article: any = await Invoice.getById(req.user.user_id, req.params.id);
-                if (!article[0].length) {
-                    res.status(404).json({ message: 'Invoice not found' });
-                    return;
+        
+                // Check if article exists and is not empty
+                if (!article || !Array.isArray(article) || article.length === 0 || !article[0] || article[0].length === 0) {
+                    res.status(404).json({ message: "Invoice not found" });
                 }
-                res.json(article[0][0]);
+        
+                const invoice = article[0][0];
+        
+                // Fetch contact only if invoice has a `contact_1`
+                const client: any = invoice.contact_1
+                    ? await Contact.getById(req.user.user_id, invoice.contact_1)
+                    : null;
+        
+                // Attach contact as a sub-object in invoice
+                invoice.client = client ? client : null;
+
+                // Fetch contact only if invoice has a `contact_1`
+                const deivery: any = invoice.contact_2
+                    ? await Contact.getById(req.user.user_id, invoice.contact_2)
+                    : null;
+        
+                // Attach contact as a sub-object in invoice
+                invoice.delivery = deivery ? deivery : null;
+
+                const subinvoices: any = await Subinvoice.getAll(invoice.invoice_id)
+                invoice.subinvoices = subinvoices ? subinvoices[0] : null;
+
+                const payments: any = await Payment.getAll(invoice.invoice_id)
+                invoice.payments = payments ? payments[0] : null;
+        
+                res.json(invoice);
             } catch (error) {
-                res.status(500).json({ message: 'Error fetching article' + error });
+                console.error("Error fetching invoice:", error);
+                res.status(500).json({ message: "Internal Server Error" });
             }
-        }
-    
+        };
+        
         async createInvoice(req: UserRequest, res: Response): Promise<void> {
             try {
+                
                 if (!req.user) {
                     res.status(403).json({ message: 'Unauthorized' });
                     return;

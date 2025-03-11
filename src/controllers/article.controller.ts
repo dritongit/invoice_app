@@ -13,8 +13,8 @@ interface UserRequest extends Request {
                     return;
                 }
                 const user_id = req.user.user_id
-                const articles: any = await Article.getAll(user_id);
-                res.json(articles[0]);
+                const [articles]: any = await Article.getAll(user_id);
+                res.json(articles);
             } catch (error) {
                 res.status(500).json({ message: 'Error fetching articles' });
             }
@@ -26,7 +26,7 @@ interface UserRequest extends Request {
                     res.status(403).json({ message: 'Unauthorized' });
                     return;
                 }
-                const article = await Article.getById(req.user.user_id, req.params.id);
+                const [article]: any = await Article.getById(req.user.user_id, req.params.id);
                 if (!article) {
                     res.status(404).json({ message: 'Article not found' });
                     return;

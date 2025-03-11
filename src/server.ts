@@ -7,6 +7,7 @@ import contactRoutes from './routes/contactRoutes';
 import invoiceRoutes from './routes/invoiceRoutes';
 import subinvoiceRoutes from './routes/subinvoiceRoutes';
 import paymentRoutes from './routes/paymentRoutes';
+import settingsRoutes from './routes/settingsRoutes';
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use('/api/contacts', contactRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/subinvoices', subinvoiceRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Define basic API route
 app.get('/api', (req, res) => {
