@@ -12,7 +12,7 @@ import { Subinvoice } from '../models/subinvoice.model';
                     res.status(403).json({ message: 'Unauthorized' });
                     return;
                 }
-                const invoice_id = req.params.invoice_id
+                const invoice_id = req.params.id
                 const articles: any = await Subinvoice.getAll(invoice_id);
                 res.json(articles[0]);
             } catch (error) {

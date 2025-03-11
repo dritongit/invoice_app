@@ -7,6 +7,7 @@ dotenv.config();
 export class Subinvoice {
     static async getAll(invoice_id: string) {
         const [rows] = await pool.query('CALL SubinvoiceReadAll(?)', [invoice_id]);
+        return rows;
     }
 
     static async getById(user_id: string, id: string) {

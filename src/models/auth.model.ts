@@ -15,8 +15,8 @@ export class Auth {
                 'CALL UserCreate(?,?,?,?)',
                 [uuid, email, password, role]
             );
-
-            if (result.affectedRows === 1) {
+            
+            if (result.affectedRows === 1 || result.affectedRows === 2) {
                 return { id: result.insertId, email, role };
             }
             return false;

@@ -10,6 +10,7 @@ const JWT_EXPIRATION: string | number = process.env.JWT_EXPIRATION || '1h'; // â
 interface JwtPayload {
     user_id: number;
     email: string;
+    role: string;
 }
 
 // Generate a JWT Token
