@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { verifyToken } from '../config/jwt';
+import { verifyAccessToken } from '../config/jwt';
 
 // Extend Request type to include user
 interface UserRequest extends Request {
     user?: { user_id: number; email: string; role: string };
 }
+
 export const authenticateJWT: RequestHandler = (req: UserRequest, res, next) => {
     const token = req.header('Authorization');
 
@@ -13,7 +14,7 @@ export const authenticateJWT: RequestHandler = (req: UserRequest, res, next) => 
         return; // ✅ Ensures function stops execution
     }
 
-    const decoded = verifyToken(token.replace('Bearer ', ''));
+    const decoded = verifyAccessToken(token.replace('Bearer ', ''));
     if (!decoded) {
         res.status(403).json({ message: 'Invalid Token' });
         return; // ✅ Ensures function stops execution

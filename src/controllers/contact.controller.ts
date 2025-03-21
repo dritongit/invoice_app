@@ -12,8 +12,8 @@ interface UserRequest extends Request {
                     return;
                 }
                 const {user_id} = req.user
-                
-                const articles: any = await Contact.getAll(user_id);
+                const searchQuery = req.query.search ? req.query.search.toString() : "";
+                const articles: any = await Contact.getAll(user_id, searchQuery);
                 res.json(articles[0]);
             } catch (error) {
                 res.status(500).json({ message: 'Error fetching contacts'+error });
