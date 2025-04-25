@@ -5,8 +5,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export class Contact {
-    static async getAll(user_id: string) {
-        const [rows] = await pool.query('CALL ContactReadAll(?)', [user_id]);
+    static async getAll(user_id: string, searchQuery: string) {
+        const [rows] = await pool.query('CALL ContactReadAll(?,?)', [user_id, searchQuery]);
         return rows;
     }
 

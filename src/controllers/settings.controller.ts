@@ -18,7 +18,7 @@ interface UserRequest extends Request {
                     res.status(404).json({ message: 'Settings not found' });
                     return;
                 }
-                res.json(article);
+                res.json(article[0]);
             } catch (error) {
                 res.status(500).json({ message: 'Error fetching settings' + error });
             }
